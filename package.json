@@ -1,67 +1,50 @@
 {
-  "name": "@smallstack/json-schema-to-firestore-rules",
-  "description": "Generates Cloud Firestore helper functions for schema validation using JSON Schema.",
-  "version": "0.1.0",
-  "author": "smallstack GmbH",
-  "bin": {
-    "js2fr": "./bin/run"
-  },
-  "bugs": "https://github.com/smallstack/json-schema-to-firestore-rules/issues",
-  "homepage": "https://github.com/smallstack/json-schema-to-firestore-rules",
-  "keywords": [
-    "firestore",
-    "json schema",
-    "generator",
-    "generate"
-  ],
-  "license": "MIT",
-  "main": "index.js",
-  "oclif": {
-    "bin": "js2fr"
-  },
-  "repository": "https://github.com/smallstack/json-schema-to-firestore-rules",
-  "types": "lib/index.d.ts",
-  "scripts": {
-    "format": "tslint -c tslint.json 'src/**/*.ts' --fix && prettier --write 'src/**/*.ts'",
-    "posttest": "nyc report --include \"src/**\" --extension .ts --reporter json",
-    "build": "tsc -b --verbose",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "semantic-release": "semantic-release"
-  },
-  "dependencies": {
-    "@oclif/command": "^1.5.18",
-    "@oclif/config": "^1.13.2",
-    "@oclif/plugin-help": "^2.2.0",
-    "glob": "^7.1.4",
-    "outdent": "^0.7.0",
-    "tslib": "^1.10.0"
-  },
-  "devDependencies": {
-    "@oclif/test": "^1.2.5",
-    "@types/chai": "^4.2.0",
-    "@types/glob": "^7.1.1",
-    "@types/json-schema": "^7.0.3",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^10.14.15",
-    "chai": "^4.2.0",
-    "cz-conventional-changelog": "^3.0.2",
-    "mocha": "^5.2.0",
-    "nyc": "^14.1.1",
-    "prettier": "1.18.2",
-    "ts-node": "^8.3.0",
-    "tslint": "^5.18.0",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.5.3",
-    "semantic-release": "^19.0.3"
-  },
-  "engines": {
-    "node": ">=8.0.0"
-  },
-  "files": [
-    "/bin",
-    "/lib"
-  ],
-  "volta": {
-    "node": "22.3.0"
-  }
+	"name": "@smallstack/json-schema-to-firestore-rules",
+	"description": "Generates Cloud Firestore helper functions for schema validation using JSON Schema.",
+	"version": "0.1.0",
+	"author": "smallstack GmbH",
+	"bugs": "https://github.com/smallstack/json-schema-to-firestore-rules/issues",
+	"homepage": "https://github.com/smallstack/json-schema-to-firestore-rules",
+	"repository": "https://github.com/smallstack/json-schema-to-firestore-rules",
+	"keywords": [
+		"firestore",
+		"json schema",
+		"generator",
+		"generate"
+	],
+	"license": "MIT",
+	"main": "dist/index.js",
+	"types": "lib/index.d.ts",
+	"bin": {
+		"js2fr": "./dist/index.js"
+	},
+	"scripts": {
+		"format": "tslint -c tslint.json 'src/**/*.ts' --fix && prettier --write 'src/**/*.ts'",
+		"posttest": "nyc report --include \"src/**\" --extension .ts --reporter json",
+		"build": "npx tsc",
+		"test": "vitest",
+		"semantic-release": "semantic-release"
+	},
+	"dependencies": {
+		"commander": "^12.1.0",
+		"glob": "^10.4.2",
+		"outdent": "^0.8.0",
+		"tslib": "^2.6.3"
+	},
+	"devDependencies": {
+		"@types/json-schema": "^7.0.15",
+		"@types/node": "^20.14.9",
+		"prettier": "^3.3.2",
+		"ts-node": "^10.9.2",
+		"tslint": "^6.1.3",
+		"tslint-config-prettier": "^1.18.0",
+		"typescript": "^5.5.2",
+		"vitest": "^1.6.0"
+	},
+	"engines": {
+		"node": ">=22.0.0"
+	},
+	"volta": {
+		"node": "22.3.0"
+	}
 }

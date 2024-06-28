@@ -1,16 +1,13 @@
 {
   "compilerOptions": {
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "declaration": true,
-    "importHelpers": true,
-    "module": "commonjs",
-    "outDir": "lib",
+    "rootDir": "src",
+    "outDir": "dist",
     "strict": true,
-    "target": "es2017"
-  },
-  "include": [
-    "src/**/*",
-    "index.ts"
-  ]
+    "target": "es6",
+    "module": "commonjs",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+  }
 }

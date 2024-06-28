@@ -8,22 +8,23 @@ This project is a fork of https://github.com/pheekus/svarog. The original projec
 
 ### Step 1: describe your schema
 
-`js2fr` was designed to be compatible with [JSON Schema 7](https://json-schema.org/draft-07/json-schema-release-notes.html) - the latest draft of the JSON Schema standard. To get started, create a folder in your project directory, place your schema in a `*.schema.json` file and give it an `$id`. The `$id` field is **very important** as it will be used when calling the `isValid` function inside your firestore security rules:
+`js2fr` was designed to be compatible with [JSON Schema 7](https://json-schema.org/draft-07/json-schema-release-notes.html) - the latest draft of the JSON Schema standard. To get started, create a folder in your project directory, place your schema in a `*.schema.json` file and give it an `$id`:
 
 ```json
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "Apple",
-  "type": "object",
-  "properties": {
-    "color": {
-      "type": "string",
-      "enum": ["green", "red"]
-    }
-  },
-  "required": ["color"]
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "Apple",
+	"type": "object",
+	"properties": {
+		"color": {
+			"type": "string",
+			"enum": ["green", "red"]
+		}
+	},
+	"required": ["color"]
 }
 ```
+
 You can use any built-in type to describe your database schema. However, you should also keep in mind that not all of the JSON Schema features are [supported](docs/compatibility.md) at the moment.
 
 #### Using Firestore data types
@@ -32,15 +33,15 @@ You can use any built-in type to describe your database schema. However, you sho
 
 ```json
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "FirestoreExample",
-  "type": "object",
-  "definitions": {
-    "Timestamp": {}
-  },
-  "properties": {
-    "date": { "$ref": "#/definitions/Timestamp" }
-  }
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "FirestoreExample",
+	"type": "object",
+	"definitions": {
+		"Timestamp": {}
+	},
+	"properties": {
+		"date": { "$ref": "#/definitions/Timestamp" }
+	}
 }
 ```
 
@@ -67,6 +68,10 @@ match /apples/{appleId} {
 
 `js2fr` will apply a _strict_ schema check when a document is created (assuring that all required properties are present and nothing out of the schema is added), and a _loose_ one on each update (when some properties defined in schema may be missing from the patch object).
 
+## Common pitfalls
+- The `$id` field is **very important** as it will be used when calling the `isValid` function inside your firestore security rules. Make sure it is unique and does not contain any special characters.
+- The firestore.rules must have the LF line ending. If you are using Windows, you can convert the file using the following command: `Get-Content firestore.rules -Raw | Set-Content -NoNewline -Encoding UTF8 firestore.rules`
+
 ## CLI reference
 
 ```bash
@@ -82,3 +87,7 @@ OPTIONS
   -h, --help     displays this message
   -v, --verbose  enables progress logs during compilation
 ```
+
+### Compatibility to https://github.com/pheekus/svarog
+
+We decided to rename the CLI and the tag being used inside the generated code to `js2fr` to avoid confusion with the original project. The generated code is still compatible with the original project, so you can use it in your existing projects without any changes.

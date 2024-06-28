@@ -1,70 +1,105 @@
-import { JSONSchema7 } from 'json-schema';
-import cel from './cel';
-import compileType from './compile-type';
+#! /usr/bin/env node
 
-function createGuard(ref: string, schema: JSONSchema7): string {
-  const dataRef = 'd';
-  const strictRef = 's';
-  const validator = compileType(schema, dataRef, strictRef) || cel.val(true);
+import { Command } from "commander";
+import fs from "fs";
+import { glob } from "glob";
+import { JSONSchema7 } from "json-schema";
+import { outdent } from "outdent";
+import { compile } from "./js2fr";
+import pkg from "../package.json";
 
-  return cel.fn(ref, dataRef, strictRef, validator);
+const generatedCodeVersion = pkg.version;
+const program = new Command();
+
+program.description(
+	"Generates Cloud Firestore helper functions for schema validation using JSON Schema."
+);
+program.argument("<input>", "input file containing JSON Schema or a glob pattern");
+program.argument("<output>", "target file where js2fr will output security rule helpers");
+program.option("--force", "overwrites existing js2fr code unconditionally");
+program.option("--help", "displays this message");
+program.option("--verbose", "enables progress logs during compilation");
+program.parse(process.argv);
+
+const options = program.opts();
+const args = program.args;
+
+console.log(options);
+console.log(args);
+
+const timestamp = Date.now();
+
+const input = args[0] as string;
+const output = args[1];
+const isVerbose = options.verbose === true;
+const isOverwriteAllowed = options.force === true;
+const isOutputEmpty = !fs.existsSync(output);
+
+function log(message: string) {
+	console.log(message);
 }
 
-function createRouter(ref: string, guards: Map<string, string>): string {
-  const nameRef = 'n';
-  const dataRef = 'd';
-  const strictRef = 's';
-
-  let condition = '';
-
-  guards.forEach((fn, name) => {
-    const nameCheck = cel.calc(nameRef, '==', cel.val(name));
-    const call = cel.call(fn, dataRef, strictRef);
-    condition = cel.calc(condition, '||', cel.calc(nameCheck, '&&', call));
-  });
-
-  return cel.fn(ref, nameRef, dataRef, strictRef, condition);
+if (isVerbose) {
+	log(`Resolving paths for ${input}`);
 }
 
-function createInterface(ref: string, routerRef: string): string {
-  const nameRef = 'n';
-  const dataRef = cel.ref('request', 'resource', 'data');
-  const strictRef = cel.calc(cel.ref('request', 'method'), '==', cel.val('create'));
+const files = glob.sync(input as string);
 
-  return cel.fn(ref, nameRef, cel.call(routerRef, nameRef, dataRef, strictRef));
+if (isVerbose) {
+	log(`Found ${files.length} file${files.length > 1 ? "s" : ""}`);
 }
 
-export interface ICompilerOptions {
-  getGuardName: (schema: JSONSchema7, i: number) => string;
-  getSchemaId: (schema: JSONSchema7, i: number) => string;
-  interface: string;
-  router: string;
+const schemas: JSONSchema7[] = [];
+
+for (const file of files) {
+	if (isVerbose) log(`Reading ${file}`);
+	const data: string = fs.readFileSync(file, { encoding: "utf-8" });
+	schemas.push(JSON.parse(data));
 }
 
-export const defaultOptions: ICompilerOptions = {
-  getGuardName: (s, i) => `_s${i}`,
-  getSchemaId: (s, i) => s.$id || `Schema${i}`,
-  interface: 'isValid',
-  router: '_s',
+const rules = [
+	`// <js2fr version="${generatedCodeVersion}">`,
+	compile(schemas),
+	"// </js2fr>"
+].join("\n");
+
+if (output && isOutputEmpty) {
+	if (isVerbose) log(`Creating ${output}`);
+	fs.writeFileSync(output, rules);
+} else if (output && !isOutputEmpty) {
+	const outputContent = fs.readFileSync(output, {
+		encoding: "utf-8"
+	});
+	const js2frRegex = /\/\/\s<js2fr version="(\d)\.(\d)\.(\d)">\n(.*)\n\/\/\s<\/js2fr>/gm;
+	const js2frInfo = js2frRegex.exec(outputContent);
+
+	if (js2frInfo === null) {
+    console.log("NOT FOUND in content: ", outputContent)
+		if (isVerbose) log(`Appending <js2fr> to ${output}`);
+		fs.writeFileSync(output, `${outputContent}\n\n${rules}\n`);
+	} else {
+		const oldVersion = js2frInfo.slice(1, 4).join(".");
+		const oldMajorVersion = parseInt(js2frInfo[1], 10);
+		const newMajorVersion = parseInt(generatedCodeVersion.split(".")[0], 10);
+		const canOverwrite =
+			oldVersion === generatedCodeVersion ||
+			(oldMajorVersion === newMajorVersion && oldMajorVersion > 0);
+
+		if (canOverwrite || isOverwriteAllowed) {
+			if (isVerbose) log(`Updating js2fr tag in ${output}`);
+
+			const newContent = outputContent.replace(js2frInfo[0], rules);
+			fs.writeFileSync(output, newContent);
+		} else {
+			console.error(outdent`
+            Output file contains a different major or pre-release version of js2fr code,
+            and replacing it might break your configuration. If you know what you're doing,
+            please use --force flag next time.
+          `);
+		}
+	}
+} else {
+	log(rules);
 }
 
-export default function(schemas: JSONSchema7[], options: Partial<ICompilerOptions> = defaultOptions): string {
-  const compilerOptions: ICompilerOptions = Object.assign({}, defaultOptions, options);
-  const guards: Map<string, string> = new Map();
-  const output: string[] = [];
-
-  schemas.forEach((schema: JSONSchema7, i: number) => {
-    const fnRef = compilerOptions.getGuardName(schema, i);
-    const schemaName = compilerOptions.getSchemaId(schema, i);
-
-    guards.set(schemaName, fnRef);
-    output.push(createGuard(fnRef, schema));
-  });
-
-  output.push(
-    createRouter(compilerOptions.router, guards),
-    createInterface(compilerOptions.interface, compilerOptions.router),
-  );
-
-  return output.join('');
-}
+if (isVerbose) log(`Finished in ${Date.now() - timestamp}ms`);

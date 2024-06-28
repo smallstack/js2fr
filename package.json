@@ -7,6 +7,27 @@
     "js2fr": "./bin/run"
   },
   "bugs": "https://github.com/smallstack/json-schema-to-firestore-rules/issues",
+  "homepage": "https://github.com/smallstack/json-schema-to-firestore-rules",
+  "keywords": [
+    "firestore",
+    "json schema",
+    "generator",
+    "generate"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "oclif": {
+    "bin": "js2fr"
+  },
+  "repository": "https://github.com/smallstack/json-schema-to-firestore-rules",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "format": "tslint -c tslint.json 'src/**/*.ts' --fix && prettier --write 'src/**/*.ts'",
+    "posttest": "nyc report --include \"src/**\" --extension .ts --reporter json",
+    "build": "tsc -b --verbose",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "semantic-release": "semantic-release"
+  },
   "dependencies": {
     "@oclif/command": "^1.5.18",
     "@oclif/config": "^1.13.2",
@@ -40,25 +61,7 @@
     "/bin",
     "/lib"
   ],
-  "homepage": "https://github.com/smallstack/json-schema-to-firestore-rules",
-  "keywords": [
-    "firestore",
-    "json schema",
-    "generator",
-    "generate"
-  ],
-  "license": "MIT",
-  "main": "index.js",
-  "oclif": {
-    "bin": "js2fr"
-  },
-  "repository": "https://github.com/smallstack/json-schema-to-firestore-rules",
-  "scripts": {
-    "format": "tslint -c tslint.json 'src/**/*.ts' --fix && prettier --write 'src/**/*.ts'",
-    "posttest": "nyc report --include \"src/**\" --extension .ts --reporter json",
-    "build": "tsc -b --verbose",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "semantic-release": "semantic-release"
-  },
-  "types": "lib/index.d.ts"
+  "volta": {
+    "node": "22.3.0"
+  }
 }

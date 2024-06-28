@@ -24,9 +24,6 @@ program.parse(process.argv);
 const options = program.opts();
 const args = program.args;
 
-console.log(options);
-console.log(args);
-
 const timestamp = Date.now();
 
 const input = args[0] as string;
@@ -74,7 +71,7 @@ if (output && isOutputEmpty) {
 	const js2frInfo = js2frRegex.exec(outputContent);
 
 	if (js2frInfo === null) {
-    console.log("NOT FOUND in content: ", outputContent)
+		console.log("NOT FOUND in content: ", outputContent);
 		if (isVerbose) log(`Appending <js2fr> to ${output}`);
 		fs.writeFileSync(output, `${outputContent}\n\n${rules}\n`);
 	} else {

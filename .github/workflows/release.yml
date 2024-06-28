@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "**"
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+      - run: npm run build # for web components to be up to date in the static folder
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      - name: Set current date as env variable
+        run: echo "NOW=$(TZ=":Europe/Berlin" date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV          
+      - uses: ncipollo/release-action@v1
+        with:
+          generateReleaseNotes: true
+          prerelease: false
+          body: This version was released at ${{ env.NOW }}.

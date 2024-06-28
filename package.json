@@ -20,7 +20,6 @@
 	},
 	"scripts": {
 		"format": "tslint -c tslint.json 'src/**/*.ts' --fix && prettier --write 'src/**/*.ts'",
-		"posttest": "nyc report --include \"src/**\" --extension .ts --reporter json",
 		"build": "npx tsc",
 		"test": "vitest",
 		"semantic-release": "semantic-release"

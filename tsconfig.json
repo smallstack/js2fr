@@ -1,13 +1,15 @@
 {
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "strict": true,
-    "target": "es6",
-    "module": "ESNext",
-    "sourceMap": true,
-    "esModuleInterop": true,
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true
-  }
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "dist",
+		"strict": true,
+		"target": "es6",
+		"module": "commonjs",
+		"sourceMap": true,
+		"declaration": true,
+		"esModuleInterop": true,
+		"moduleResolution": "node",
+		"skipLibCheck": true,
+		"resolveJsonModule": true
+	}
 }

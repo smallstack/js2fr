@@ -14,15 +14,13 @@
 	],
 	"license": "MIT",
 	"main": "dist/index.js",
-	"types": "lib/index.d.ts",
+	"types": "dist/index.d.ts",
 	"bin": {
 		"js2fr": "./dist/index.js"
 	},
 	"scripts": {
-		"format": "tslint -c tslint.json 'src/**/*.ts' --fix && prettier --write 'src/**/*.ts'",
 		"build": "npx tsc",
-		"test": "vitest",
-		"semantic-release": "semantic-release"
+		"test": "vitest"
 	},
 	"dependencies": {
 		"commander": "^12.1.0",

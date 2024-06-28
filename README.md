@@ -1,22 +1,14 @@
-Svarog for Firestore
-=======
+# Json Schema to Firestore Rules Generator (js2fr)
 
-🚨 **This project is no longer maintained. With Svarog, I was trying to see if it was possible to create a DB-first service where Firestore would handle the CRUD and the rest of the operations would be carried out in background via Triggers. The conclusion is that a) it's definitely possible and b) you're going to wish you went with the traditional RESTful monolith architecture very soon. It's way too complex for a simple project and way too limited for anything larger than a TODO app. It _was_ fun to build though :) Thanks to everyone who gave it a try!**
+This project is a fork of https://github.com/pheekus/svarog. The original project is no longer maintained. This fork is an attempt to keep the project alive and add new features.
 
-Svarog is a CLI that helps you protect your [Firestore](https://cloud.google.com/firestore) schema from unwanted mutations. It generates a set of of helper functions based on [JSON Schema](https://json-schema.org) files that you can use in your [Security Rules](https://firebase.google.com/docs/firestore/security/get-started) to validate user input.
-
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/svarog.svg)](https://npmjs.org/package/svarog)
-[![CircleCI](https://circleci.com/gh/dantothefuture/svarog/tree/master.svg?style=shield)](https://circleci.com/gh/dantothefuture/svarog/tree/master)
-[![Codecov](https://codecov.io/gh/dantothefuture/svarog/branch/master/graph/badge.svg)](https://codecov.io/gh/dantothefuture/svarog)
-
-> **Note**: if you are an npm user, please avoid installing versions 0.5.0 to 1.2.5 - there was an issue (#11) with the project config that resulted in empty packages being published to npm.
+`js2fr` is a CLI that helps you protect your [Firestore](https://cloud.google.com/firestore) schema from unwanted mutations. It generates a set of of helper functions based on [JSON Schema](https://json-schema.org) files that you can use in your [Security Rules](https://firebase.google.com/docs/firestore/security/get-started) to validate user input.
 
 ## Getting started
 
 ### Step 1: describe your schema
 
-Svarog was designed to be compatible with [JSON Schema 7](https://json-schema.org/draft-07/json-schema-release-notes.html) - the latest draft of the JSON Schema standard. To get started, create a folder in your project directory, place your schema in a `*.json` file and give it an `$id`:
+`js2fr` was designed to be compatible with [JSON Schema 7](https://json-schema.org/draft-07/json-schema-release-notes.html) - the latest draft of the JSON Schema standard. To get started, create a folder in your project directory, place your schema in a `*.schema.json` file and give it an `$id`. The `$id` field is **very important** as it will be used when calling the `isValid` function inside your firestore security rules:
 
 ```json
 {
@@ -32,12 +24,11 @@ Svarog was designed to be compatible with [JSON Schema 7](https://json-schema.or
   "required": ["color"]
 }
 ```
-
 You can use any built-in type to describe your database schema. However, you should also keep in mind that not all of the JSON Schema features are [supported](docs/compatibility.md) at the moment.
 
 #### Using Firestore data types
 
-Svarog includes basic support for `Timestamp`, `Bytes`, `LatLng` and `Path` Firestore field types. To enable type checking on such fields, register the appropriate schemas in `definitions` section and then reference them in your main schema with `$ref` like this:
+`js2fr` includes basic support for `Timestamp`, `Bytes`, `LatLng` and `Path` Firestore field types. To enable type checking on such fields, register the appropriate schemas in `definitions` section and then reference them in your main schema with `$ref` like this:
 
 ```json
 {
@@ -45,24 +36,24 @@ Svarog includes basic support for `Timestamp`, `Bytes`, `LatLng` and `Path` Fire
   "$id": "FirestoreExample",
   "type": "object",
   "definitions": {
-    "Timestamp": {},
+    "Timestamp": {}
   },
   "properties": {
-    "date": { "$ref": "#/definitions/Timestamp" },
+    "date": { "$ref": "#/definitions/Timestamp" }
   }
 }
 ```
 
-### Step 2: run Svarog
+### Step 2: run `js2fr`
 
 Once you have your schema ready, install and run Svarog:
 
 ```bash
-$ npm i -g svarog
-$ svarog "schema/*.json" "firestore.rules" --verbose
+$ npm i -g @smallstack/json-schema-to-firestore-rules
+$ js2fr "**/*.schema.json" "firestore.rules" --verbose
 ```
 
-The last command will pull every schema in `schema` folder, run the compiler and append a minified code snippet to the `firestore.rules` file. You can run this command every time you update your schema, and it will replace the generated snippet for you automatically if both old and new helpers were created with the compatible versions of CLI.
+The last command will pull every file ending with `.schema.json`, run the compiler and append a minified code snippet to the `firestore.rules` file. You can run this command every time you update your schema, and it will replace the generated snippet for you automatically if both old and new helpers were created with the compatible versions of CLI.
 
 ### Step 3: call `isValid()` in Security Rules
 
@@ -74,13 +65,13 @@ match /apples/{appleId} {
 }
 ```
 
-Svarog will apply a *strict* schema check when a document is created (assuring that all required properties are present and nothing out of the schema is added), and a *loose* one on each update (when some properties defined in schema may be missing from the patch object).
+`js2fr` will apply a _strict_ schema check when a document is created (assuring that all required properties are present and nothing out of the schema is added), and a _loose_ one on each update (when some properties defined in schema may be missing from the patch object).
 
 ## CLI reference
 
 ```bash
 USAGE
-  $ svarog INPUT [OUTPUT]
+  $ js2fr INPUT [OUTPUT]
 
 ARGUMENTS
   INPUT   input file containing JSON Schema or a glob pattern

@@ -1,12 +1,12 @@
 {
-  "name": "svarog",
+  "name": "@smallstack/json-schema-to-firestore-rules",
   "description": "Generates Cloud Firestore helper functions for schema validation using JSON Schema.",
-  "version": "0.0.0-development",
-  "author": "Daniil Bratukhin <dantothefuture@gmail.com>",
+  "version": "0.1.0",
+  "author": "smallstack GmbH",
   "bin": {
-    "svarog": "./bin/run"
+    "js2fr": "./bin/run"
   },
-  "bugs": "https://github.com/dantothefuture/svarog/issues",
+  "bugs": "https://github.com/smallstack/json-schema-to-firestore-rules/issues",
   "dependencies": {
     "@oclif/command": "^1.5.18",
     "@oclif/config": "^1.13.2",
@@ -40,14 +40,19 @@
     "/bin",
     "/lib"
   ],
-  "homepage": "https://github.com/dantothefuture/svarog",
-  "keywords": [],
+  "homepage": "https://github.com/smallstack/json-schema-to-firestore-rules",
+  "keywords": [
+    "firestore",
+    "json schema",
+    "generator",
+    "generate"
+  ],
   "license": "MIT",
   "main": "index.js",
   "oclif": {
-    "bin": "svarog"
+    "bin": "js2fr"
   },
-  "repository": "https://github.com/dantothefuture/svarog",
+  "repository": "https://github.com/smallstack/json-schema-to-firestore-rules",
   "scripts": {
     "format": "tslint -c tslint.json 'src/**/*.ts' --fix && prettier --write 'src/**/*.ts'",
     "posttest": "nyc report --include \"src/**\" --extension .ts --reporter json",
@@ -55,10 +60,5 @@
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "semantic-release": "semantic-release"
   },
-  "types": "lib/index.d.ts",
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  }
+  "types": "lib/index.d.ts"
 }

@@ -5,7 +5,10 @@
 	"author": "smallstack GmbH",
 	"bugs": "https://github.com/smallstack/js2fr/issues",
 	"homepage": "https://github.com/smallstack/js2fr",
-	"repository": "https://github.com/smallstack/js2fr",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/smallstack/js2fr.git"
+	},
 	"keywords": [
 		"firestore",
 		"json schema",
@@ -16,7 +19,7 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"bin": {
-		"js2fr": "./dist/index.js"
+		"js2fr": "dist/index.js"
 	},
 	"scripts": {
 		"build": "npx tsc",

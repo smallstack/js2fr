@@ -1,4 +1,4 @@
-# Json Schema to Firestore Rules Generator (js2fr)
+# JS2FR - JSON Schema to Firestore Rules Generator
 
 This project is a fork of https://github.com/pheekus/svarog. The original project is no longer maintained. This fork is an attempt to keep the project alive and add new features.
 

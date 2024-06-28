@@ -1,11 +1,11 @@
 {
-	"name": "@smallstack/json-schema-to-firestore-rules",
+	"name": "@smallstack/js2fr",
 	"description": "Generates Cloud Firestore helper functions for schema validation using JSON Schema.",
 	"version": "0.1.0",
 	"author": "smallstack GmbH",
-	"bugs": "https://github.com/smallstack/json-schema-to-firestore-rules/issues",
-	"homepage": "https://github.com/smallstack/json-schema-to-firestore-rules",
-	"repository": "https://github.com/smallstack/json-schema-to-firestore-rules",
+	"bugs": "https://github.com/smallstack/js2fr/issues",
+	"homepage": "https://github.com/smallstack/js2fr",
+	"repository": "https://github.com/smallstack/js2fr",
 	"keywords": [
 		"firestore",
 		"json schema",

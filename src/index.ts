@@ -71,7 +71,6 @@ if (output && isOutputEmpty) {
 	const js2frInfo = js2frRegex.exec(outputContent);
 
 	if (js2frInfo === null) {
-		console.log("NOT FOUND in content: ", outputContent);
 		if (isVerbose) log(`Appending <js2fr> to ${output}`);
 		fs.writeFileSync(output, `${outputContent}\n\n${rules}\n`);
 	} else {

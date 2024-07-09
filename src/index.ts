@@ -99,3 +99,5 @@ if (output && isOutputEmpty) {
 }
 
 if (isVerbose) log(`Finished in ${Date.now() - timestamp}ms`);
+
+export { compile as convertJsonSchema } from "./js2fr";
